@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #060607;
+  --foreground: #ffffff;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  overflow-x: hidden;
+  selection-background-color: #E11D48;
+  selection-color: #ffffff;
+}
+
+/* Custom scrollbar with crimson-ruby pearlescent thumb */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #060607;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #271d22;
+  border-radius: 9999px;
+  border: 1px solid rgba(225, 29, 72, 0.2);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #E11D48;
+}
+
+/* Glassmorphism helpers */
+.glass-panel {
+  background: rgba(18, 15, 17, 0.68);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ruby-border-glow {
+  border-color: rgba(225, 29, 72, 0.4);
+  box-shadow: 0 0 30px -5px rgba(225, 29, 72, 0.3);
+}
+
+.peatlescent-sheen {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(225, 29, 72, 0.08) 50%, rgba(245, 158, 11, 0.04) 100%);
+  border: 1px solid rgba(225, 29, 72, 0.25);
+}
