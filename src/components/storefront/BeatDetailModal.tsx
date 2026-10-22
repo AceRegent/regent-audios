@@ -13,6 +13,7 @@ import {
   Clock,
   Music,
   Share2,
+  Download,
 } from "lucide-react";
 import { Beat } from "@/types";
 import { useAudio } from "@/context/AudioContext";
@@ -29,9 +30,11 @@ export function BeatDetailModal({
   onClose,
   onOpenLicense,
 }: BeatDetailModalProps) {
-  const { currentTrack, isPlaying, playTrack, togglePlay } = useAudio();
+  const { currentTrack, isPlaying, playTrack, togglePlay, openFreeDownloadModal, licenses } = useAudio();
 
   if (!beat) return null;
+
+  const startingPrice = licenses.length > 0 ? Math.min(...licenses.map((l) => l.price)) : 29.99;
 
   const isCurrentPlaying = currentTrack?.id === beat.id && isPlaying;
 
@@ -160,19 +163,27 @@ export function BeatDetailModal({
         </div>
 
         {/* Bottom Modal Actions */}
-        <div className="mt-6 flex items-center justify-between border-t border-white/[0.08] pt-4">
-          <span className="text-xs font-mono text-zinc-500">
-            Instant delivery via secure download token & email.
-          </span>
+        <div className="mt-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-white/[0.08] pt-4">
+          <button
+            onClick={() => {
+              onClose();
+              openFreeDownloadModal(beat);
+            }}
+            className="flex items-center justify-center gap-1.5 rounded-xl border border-crimson/50 bg-crimson/10 px-4 py-2.5 text-xs font-semibold text-crimson-light hover:bg-crimson/20 transition-all"
+          >
+            <Download className="h-4 w-4 text-crimson" />
+            <span>Download Free Audition MP3</span>
+          </button>
+
           <button
             onClick={() => {
               onClose();
               onOpenLicense(beat);
             }}
-            className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-black shadow-gold hover:scale-[1.02] transition-transform"
+            className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-crimson via-red-600 to-amber-500 px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-ruby hover:scale-[1.02] transition-transform"
           >
             <ShieldCheck className="h-4 w-4" />
-            <span>Select License Tier ($29.99+)</span>
+            <span>Select License Tier (${startingPrice.toFixed(2)}+)</span>
           </button>
         </div>
       </div>

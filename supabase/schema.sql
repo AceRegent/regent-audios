@@ -47,6 +47,27 @@ CREATE TABLE IF NOT EXISTS orders (
     download_token UUID DEFAULT uuid_generate_v4() UNIQUE,
     amount_paid NUMERIC(10, 2) NOT NULL,
     status VARCHAR(50) DEFAULT 'completed',
+    applied_promo VARCHAR(50),
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 4. ARTIST LEADS TABLE (Free Tagged Audition Downloads)
+CREATE TABLE IF NOT EXISTS leads (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    artist_name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    beat_id UUID REFERENCES beats(id) ON DELETE SET NULL,
+    beat_title TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 5. PROMO CODES TABLE
+CREATE TABLE IF NOT EXISTS promo_codes (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    code VARCHAR(50) UNIQUE NOT NULL,
+    discount_percent INT NOT NULL,
+    is_active BOOLEAN DEFAULT true,
+    description TEXT,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -54,6 +75,8 @@ CREATE TABLE IF NOT EXISTS orders (
 ALTER TABLE beats ENABLE ROW LEVEL SECURITY;
 ALTER TABLE licenses ENABLE ROW LEVEL SECURITY;
 ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
+ALTER TABLE leads ENABLE ROW LEVEL SECURITY;
+ALTER TABLE promo_codes ENABLE ROW LEVEL SECURITY;
 
 -- Beats: Public read access, Admin write access
 CREATE POLICY "Public beats are readable by everyone" 
@@ -65,9 +88,12 @@ CREATE POLICY "Authenticated admins can insert beats"
 CREATE POLICY "Authenticated admins can update beats" 
     ON beats FOR UPDATE TO authenticated USING (true);
 
--- Licenses: Public read access
+-- Licenses: Public read access, Admin update
 CREATE POLICY "Public licenses are readable by everyone" 
     ON licenses FOR SELECT USING (true);
+
+CREATE POLICY "Authenticated admins can update licenses" 
+    ON licenses FOR UPDATE TO authenticated USING (true);
 
 -- Orders: Users can read their own order via download_token or email
 CREATE POLICY "Orders readable with token" 
@@ -75,6 +101,17 @@ CREATE POLICY "Orders readable with token"
 
 CREATE POLICY "Service role can insert orders" 
     ON orders FOR INSERT WITH CHECK (true);
+
+-- Leads: Public insert (lead magnet), Admin select/export
+CREATE POLICY "Public can insert leads" 
+    ON leads FOR INSERT WITH CHECK (true);
+
+CREATE POLICY "Authenticated admins can view leads" 
+    ON leads FOR SELECT TO authenticated USING (true);
+
+-- Promo Codes: Public can verify active codes
+CREATE POLICY "Public can read active promo codes" 
+    ON promo_codes FOR SELECT USING (is_active = true);
 
 -- =========================================================
 -- SEED DATA
@@ -139,3 +176,8 @@ INSERT INTO licenses (name, tier_slug, price, file_type, features, description) 
     'Complete master buyout. The beat is permanently retired from the Regent catalog for your exclusive use.'
 )
 ON CONFLICT (tier_slug) DO NOTHING;
+
+-- Seed default promo code
+INSERT INTO promo_codes (code, discount_percent, is_active, description) VALUES
+('REGENT20', 20, true, 'Standard 20% discount for audition leads')
+ON CONFLICT (code) DO NOTHING;

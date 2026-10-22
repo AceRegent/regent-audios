@@ -9,6 +9,7 @@ import { SearchBarAndSort } from "@/components/storefront/SearchBarAndSort";
 import { LuxuryTracklist } from "@/components/storefront/LuxuryTracklist";
 import { BeatDetailModal } from "@/components/storefront/BeatDetailModal";
 import { LicensingDrawer } from "@/components/licensing/LicensingDrawer";
+import { FreeDownloadModal } from "@/components/licensing/FreeDownloadModal";
 import { LicensingPageContent } from "@/components/licensing/LicensingPageContent";
 import { ProducerDashboard } from "@/components/dashboard/ProducerDashboard";
 import { INITIAL_BEATS } from "@/lib/constants";
@@ -43,6 +44,9 @@ export default function HomePage() {
     isLicensingOpen,
     openLicensingDrawer,
     closeLicensingDrawer,
+    freeDownloadBeat,
+    isFreeDownloadOpen,
+    closeFreeDownloadModal,
   } = useAudio();
 
   // Calculate beat counts per genre
@@ -248,6 +252,13 @@ export default function HomePage() {
         isOpen={isLicensingOpen}
         beat={licensingBeat}
         onClose={closeLicensingDrawer}
+      />
+
+      {/* Free Tagged Audition Demo Modal (Lead Magnet) */}
+      <FreeDownloadModal
+        isOpen={isFreeDownloadOpen}
+        beat={freeDownloadBeat}
+        onClose={closeFreeDownloadModal}
       />
 
       {/* Beat Detail Inspection Modal */}

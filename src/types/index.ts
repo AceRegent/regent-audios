@@ -55,6 +55,23 @@ export interface Order {
   created_at: string;
 }
 
+export interface Lead {
+  id: string;
+  artist_name: string;
+  email: string;
+  beat_id?: string;
+  beat_title: string;
+  created_at: string;
+}
+
+export interface PromoCode {
+  id: string;
+  code: string;
+  discount_percent: number;
+  is_active: boolean;
+  description?: string;
+}
+
 export interface ProducerStats {
   totalRevenue: number;
   totalSales: number;

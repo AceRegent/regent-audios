@@ -11,6 +11,7 @@ import {
   Clock,
   Sparkles,
   Volume2,
+  Download,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Beat } from "@/types";
@@ -28,8 +29,18 @@ export function LuxuryTracklist({
   viewMode,
   onSelectBeatDetail,
 }: LuxuryTracklistProps) {
-  const { currentTrack, isPlaying, playTrack, togglePlay, openLicensingDrawer } = useAudio();
+  const {
+    currentTrack,
+    isPlaying,
+    playTrack,
+    togglePlay,
+    openLicensingDrawer,
+    openFreeDownloadModal,
+    licenses,
+  } = useAudio();
   const [hoveredBeatId, setHoveredBeatId] = useState<string | null>(null);
+
+  const startingPrice = licenses.length > 0 ? Math.min(...licenses.map((l) => l.price)) : 29.99;
 
   if (beats.length === 0) {
     return (
@@ -184,8 +195,21 @@ export function LuxuryTracklist({
                   {formatTime(beat.duration || 180)}
                 </div>
 
-                {/* Col 6: Instant License Button & Action */}
+                {/* Col 6: Instant License Button, Free DL & Actions */}
                 <div className="relative z-10 col-span-6 sm:col-span-3 lg:col-span-2 flex items-center justify-end gap-2 pr-1">
+                  {/* Free Download Lead Magnet button */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openFreeDownloadModal(beat);
+                    }}
+                    title="Download free non-commercial audition demo"
+                    className="flex items-center gap-1 rounded-lg border border-white/10 bg-white/[0.04] px-2.5 py-1.5 text-[11px] font-mono text-zinc-300 hover:border-crimson/50 hover:bg-crimson/10 hover:text-crimson-light transition-all"
+                  >
+                    <Download className="h-3 w-3 text-crimson" />
+                    <span className="hidden sm:inline">Free DL</span>
+                  </button>
+
                   {/* Info modal trigger */}
                   <button
                     onClick={(e) => {
@@ -207,7 +231,7 @@ export function LuxuryTracklist({
                     className="flex items-center gap-1.5 rounded-lg border border-crimson/40 bg-crimson/10 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-crimson-light transition-all hover:bg-gradient-to-r hover:from-crimson hover:to-amber-500 hover:text-white hover:shadow-ruby"
                   >
                     <ShieldCheck className="h-3.5 w-3.5" />
-                    <span>$29.99+</span>
+                    <span>${startingPrice.toFixed(2)}+</span>
                   </button>
                 </div>
               </div>
@@ -300,10 +324,11 @@ export function LuxuryTracklist({
             {/* Bottom Actions */}
             <div className="mt-4 flex items-center justify-between gap-2 border-t border-white/[0.08] pt-3">
               <button
-                onClick={() => onSelectBeatDetail(beat)}
-                className="text-xs text-zinc-400 hover:text-white transition-colors"
+                onClick={() => openFreeDownloadModal(beat)}
+                className="flex items-center gap-1 text-xs font-mono text-zinc-400 hover:text-crimson-light transition-colors"
               >
-                Inspect Stems
+                <Download className="h-3 w-3 text-crimson" />
+                <span>Free DL</span>
               </button>
 
               <button
@@ -311,7 +336,7 @@ export function LuxuryTracklist({
                 className="flex items-center gap-1 rounded-lg bg-gradient-to-r from-crimson via-red-600 to-amber-500 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-white transition-all hover:scale-105 shadow-ruby"
               >
                 <ShieldCheck className="h-3.5 w-3.5" />
-                <span>$29.99+</span>
+                <span>${startingPrice.toFixed(2)}+</span>
               </button>
             </div>
           </div>

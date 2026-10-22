@@ -11,6 +11,7 @@ import {
   ArrowRight,
   Flame,
   Zap,
+  Download,
 } from "lucide-react";
 import { useAudio } from "@/context/AudioContext";
 import { Beat } from "@/types";
@@ -21,9 +22,18 @@ interface HeroBannerProps {
 }
 
 export function HeroBanner({ featuredBeat }: HeroBannerProps) {
-  const { currentTrack, isPlaying, playTrack, togglePlay, openLicensingDrawer } = useAudio();
+  const {
+    currentTrack,
+    isPlaying,
+    playTrack,
+    togglePlay,
+    openLicensingDrawer,
+    openFreeDownloadModal,
+    licenses,
+  } = useAudio();
 
   const isCurrentPlaying = currentTrack?.id === featuredBeat.id && isPlaying;
+  const startingPrice = licenses.length > 0 ? Math.min(...licenses.map((l) => l.price)) : 29.99;
 
   const handleFeaturedPlay = () => {
     if (currentTrack?.id === featuredBeat.id) {
@@ -77,7 +87,7 @@ export function HeroBanner({ featuredBeat }: HeroBannerProps) {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex flex-wrap items-center gap-4 pt-2">
+          <div className="flex flex-wrap items-center gap-3.5 pt-2">
             <button
               onClick={handleFeaturedPlay}
               className="flex items-center gap-3 rounded-xl bg-gradient-to-r from-crimson via-red-600 to-amber-500 px-6 py-3.5 text-sm font-bold uppercase tracking-wider text-white shadow-ruby transition-all hover:scale-[1.02] hover:shadow-ruby-lg active:scale-95"
@@ -91,11 +101,19 @@ export function HeroBanner({ featuredBeat }: HeroBannerProps) {
             </button>
 
             <button
+              onClick={() => openFreeDownloadModal(featuredBeat)}
+              className="flex items-center gap-2 rounded-xl border border-crimson/50 bg-crimson/10 px-5 py-3.5 text-sm font-semibold tracking-wide text-crimson-light transition-all hover:bg-crimson/20"
+            >
+              <Download className="h-4 w-4 text-crimson" />
+              <span>Free Audition MP3</span>
+            </button>
+
+            <button
               onClick={() => openLicensingDrawer(featuredBeat)}
               className="flex items-center gap-2 rounded-xl border border-white/20 bg-white/[0.04] px-5 py-3.5 text-sm font-semibold tracking-wide text-white transition-all hover:border-crimson/60 hover:bg-white/[0.08]"
             >
               <ShieldCheck className="h-4 w-4 text-crimson" />
-              <span>Explore Licenses ($29.99+)</span>
+              <span>Commercial Lease (${startingPrice.toFixed(2)}+)</span>
             </button>
           </div>
         </div>

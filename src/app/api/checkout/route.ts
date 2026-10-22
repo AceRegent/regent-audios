@@ -10,7 +10,7 @@ const stripe = stripeSecret ? new Stripe(stripeSecret, { apiVersion: "2024-09-30
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { beatId, licenseId, buyerEmail, buyerName } = body;
+    const { beatId, licenseId, buyerEmail, buyerName, appliedPromoCode, finalAmount } = body;
 
     if (!beatId || !licenseId || !buyerEmail) {
       return NextResponse.json(
@@ -21,6 +21,7 @@ export async function POST(req: NextRequest) {
 
     const beat = INITIAL_BEATS.find((b) => b.id === beatId) || INITIAL_BEATS[0];
     const license = LICENSING_TIERS.find((l) => l.id === licenseId) || LICENSING_TIERS[0];
+    const chargePrice = typeof finalAmount === "number" && finalAmount > 0 ? finalAmount : license.price;
 
     const origin = req.headers.get("origin") || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
     const downloadToken = generateDownloadToken();
@@ -34,11 +35,11 @@ export async function POST(req: NextRequest) {
             price_data: {
               currency: "usd",
               product_data: {
-                name: `${beat.title} - ${license.name}`,
+                name: `${beat.title} - ${license.name}${appliedPromoCode ? ` (Promo: ${appliedPromoCode})` : ""}`,
                 description: `Boutique license (${license.file_type}) for instrumental "${beat.title}" produced by ${beat.producer}.`,
                 images: [beat.artwork_url],
               },
-              unit_amount: Math.round(license.price * 100),
+              unit_amount: Math.round(chargePrice * 100),
             },
             quantity: 1,
           },
@@ -49,6 +50,7 @@ export async function POST(req: NextRequest) {
           license_id: license.id,
           download_token: downloadToken,
           buyer_name: buyerName || "Artist",
+          applied_promo: appliedPromoCode || "none",
         },
         mode: "payment",
         success_url: `${origin}/downloads/${downloadToken}?session_id={CHECKOUT_SESSION_ID}`,
@@ -59,13 +61,13 @@ export async function POST(req: NextRequest) {
     }
 
     // High-Fidelity Demo / Fallback Mode (Instant automated fulfillment)
-    // Works out-of-the-box in local environments, test environments, and sandbox
     return NextResponse.json({
       success: true,
       downloadToken,
       beatTitle: beat.title,
       licenseName: license.name,
-      amount: license.price,
+      amount: chargePrice,
+      appliedPromoCode: appliedPromoCode || null,
       message: "Order fulfilled instantly in luxury demo mode.",
     });
   } catch (err: any) {
