@@ -69,10 +69,6 @@ export function Header({
                   AUDIOS
                 </span>
               </div>
-              <p className="text-[9px] font-mono uppercase tracking-[0.32em] text-zinc-400 flex items-center gap-1">
-                <span className="h-1 w-1 rounded-full bg-crimson animate-ping" />
-                Pearlescent Sound Vault
-              </p>
             </div>
           </Link>
         </div>

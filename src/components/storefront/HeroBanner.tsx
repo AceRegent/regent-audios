@@ -55,19 +55,19 @@ export function HeroBanner({ featuredBeat }: HeroBannerProps) {
         {/* Left Column: Brand Statement & CTA */}
         <div className="lg:col-span-7 space-y-6">
           <div className="inline-flex items-center gap-2 rounded-full border border-crimson/40 bg-crimson/10 px-3.5 py-1 text-xs font-mono font-semibold tracking-wider text-crimson-light">
-            <Flame className="h-3.5 w-3.5 text-crimson animate-pulse" />
-            <span>PESQUET ROYAL DROP • PEATLESCENT RED EDITION</span>
+            <Sparkles className="h-3.5 w-3.5 text-crimson animate-pulse" />
+            <span>WELCOME TO REGENT AUDIOS • OFFICIAL SOUND VAULT</span>
           </div>
 
           <h1 className="font-sans text-3xl font-black uppercase tracking-tight text-white sm:text-5xl lg:text-6xl">
-            OBSIDIAN & <br />
+            WELCOME TO <br />
             <span className="bg-gradient-to-r from-crimson-light via-red-500 to-amber-400 bg-clip-text text-transparent">
-              PEATLESCENT LAB.
+              REGENT AUDIOS.
             </span>
           </h1>
 
           <p className="max-w-xl text-sm sm:text-base leading-relaxed text-zinc-300 font-normal">
-            Boutique instrumental beats, industry-grade 24-bit multi-track stems, and instantaneous licensing tiers engineered for Grammy-caliber vocalists, charting producers, and high-end film scores.
+            Welcome to your premier destination for boutique instrumental beats, industry-grade 24-bit multi-track stems, and instant commercial licensing. Crafted for recording artists, songwriters, and creators ready to shape their next sound.
           </p>
 
           {/* Quick Metrics Bar */}

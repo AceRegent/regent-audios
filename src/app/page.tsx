@@ -224,7 +224,7 @@ export default function HomePage() {
                 <span className="font-bold text-white tracking-widest uppercase">REGENT</span>
                 <span className="font-light text-crimson-light tracking-widest uppercase">AUDIOS</span>
               </div>
-              <p className="text-[10px] font-mono text-zinc-500">The Peatlescent Sound Lab • 24-Bit Lossless</p>
+              <p className="text-[10px] font-mono text-zinc-500">Official Sound Vault • 24-Bit Lossless</p>
             </div>
           </div>
 
